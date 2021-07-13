@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>シンプルホールデム</title>
+    <style>
+        h1 {
+            text-align: center;
+        }
+
+        .main {
+            width: 400px;
+            margin: 0px auto;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>ヘッズアップ・テキサスホールデム</h1>
+    <div class="main">
+        <div>
+            相手（<span>BB</span>）<br>
+            総チップ：<span id='oppStack'>10000</span><br>
+            ベット額：<span id='oppBet'></span><br>
+            手札：<span id='oppback'>？？</span>
+            <span id='cardOpp'></span><br><br>
+            <div class='showDown' id='oppHand'></div>
+            <div id='oppAct'></div><br>
+            <span id='step'></span><br>
+            <span id='judge'></span><br>
+            ポット：<span id='pot'>0</span><br>
+            場のカード：
+            <span id='back1'>？？？</span>
+            <span id='flop'></span>
+            <span id='back2'>？</span>
+            <span id='turn'></span>
+            <span id='back3'>？</span>
+            <span id='river'></span>
+            <br><br><br>
+            自分（<span>SB</span>）<br>
+            総チップ：<span id='playerStack'>10000</span><br>
+            ベット額：<span id='playerBet' class='suit'></span><br>
+            手札：<span id='cardPlayer'></span><br><br>
+            <div class='showDown' id='playerHand'></div>
+            <div id='playerAct'></div>
+        </div>
+
+        <input type="button" value="フォールド" onclick="action('fold')">
+        <input id='call' type="button" value="コール" onclick="action('call')">
+        <input id='check' type="button" value="チェック" onclick="action('check')">
+        <input id='raise' type="button" value="レイズ" onclick="action('raise')">
+        <input id='bet' type="button" value="ベット" onclick="action('bet')">
+        <input id='amount' type='number' step='200' min='0' max='20000' value='200'>
+        <br>
+        <input type="button" value="もう一度遊ぶ" onclick="koshin()">
+
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+    <script src='./app.js'></script>
+</body>
+
+</html>
