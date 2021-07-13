@@ -56,6 +56,7 @@ const setChip = () => {
         $('#check').hide();
         $('#bet').hide();
         $('#call').show();
+        $('#raise').show();
     }
 
     $('#playerBet').html(100);
