@@ -79,14 +79,59 @@ class Game {
         }elseif($this->playerHand[1] > $this->oppHand[1]){
             $judge = 'lose';
         }else{
-            if($this->playerHand[2] > $this->oppHand[2]){
-            $judge = 'win';
-            }elseif($this->playerHand[2] < $this->oppHand[2]){
-            $judge = 'lose';
-            }else{
-            $judge = 'chop';
+            //同役判定（ホールデム仕様なので実際には不要な条件文あり）
+            switch ($this->playerHand[0]) {
+                case 'ストレートフラッシュ':
+                case 'ストレート':
+                    if($this->playerHand[2][0] > $this->oppHand[2][0]){
+                        //自分がA,2,3,4,5のストレートの場合
+                        if(($this->playerHand[2][0] == 12 && $this->playerHand[2][1] == 3)){
+                            $judge = 'lose';
+                        }else{
+                            $judge = 'win';
+                        }
+                    }elseif($this->playerHand[2][0] < $this->oppHand[2][0]){
+                        //相手がA,2,3,4,5のストレートの場合
+                        if(($this->oppHand[2][0] == 12 && $this->oppHand[2][1] == 3)){
+                            $judge = 'win';
+                        }else{
+                            $judge = 'lose';
+                        }
+                    }else{
+                        //自分がA,2,3,4,5のストレートの場合
+                        if(($this->playerHand[2][0] == 12 && $this->playerHand[2][1] == 3)){
+                            //相手がA,2,3,4,5のストレートの場合
+                            if(($this->oppHand[2][0] == 12 && $this->oppHand[2][1] == 3)){
+                                $judge = 'chop';
+                            }else{
+                                $judge = 'lose';
+                            }
+                        }else{
+                            //相手がA,2,3,4,5のストレートの場合
+                            if(($this->oppHand[2][0] == 12 && $this->oppHand[2][1] == 3)){
+                                $judge = 'win';
+                            }else{
+                                $judge = 'chop';
+                            }
+                        }
+                    }
+                    break;
+        
+                default:
+                    for ($i=0; $i < count($this->playerHand[2]); $i++) { 
+                        if($this->playerHand[2][$i] > $this->oppHand[2][$i]){
+                            $judge = 'win';
+                            break;
+                        }elseif($this->playerHand[2][$i] < $this->oppHand[2][$i]){
+                            $judge = 'lose';
+                            break;
+                        }else{
+                            $judge = 'chop';
+                        }
+                    }
+                    break;
             }
-        }   
+        }
 
     return $judge;
     }
