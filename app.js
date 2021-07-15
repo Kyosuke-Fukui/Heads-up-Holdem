@@ -59,6 +59,8 @@ const setChip = () => {
         $('#raise').show();
     }
 
+    $('#playerAct').html('')
+    $('#oppAct').html('')
     $('#playerBet').html(100);
     $('#oppBet').html(200);
     $('#playerStack').html(playerStack - 100)
@@ -72,8 +74,14 @@ setChip();
 
 
 function koshin() {
-    getCard();
-    setChip();
+    //チップがどちらか一方の全取りとなった場合
+    if (playerStack == 0 || oppStack == 0) {
+        location.reload();
+    } else {
+        //そうでない場合、ゲーム継続
+        getCard();
+        setChip();
+    }
 }
 
 let step
@@ -81,6 +89,7 @@ let rnd
 
 const action = (a) => {
     switch (a) {
+        //フォールド⇒その時点で自分の負け
         case 'fold':
             $('#playerAct').show();
             $('#playerAct').html('フォールド');
@@ -97,6 +106,7 @@ const action = (a) => {
                 $('#playerAct').show();
 
             } else {
+                //自分の総チップ量が必要コール額以下の場合、オールイン⇒ショーダウン
                 $('#playerBet').html(parseInt($('#playerBet').text()) + parseInt($('#playerStack').text()))
                 $('#playerStack').html(0)
                 $('#playerAct').html('オールイン');
@@ -127,7 +137,7 @@ const action = (a) => {
         case 'check':
             $('#playerAct').html('チェック');
 
-            //ベット額が等しくなり、次の段階に進む
+            //チェックアラウンド⇒次の段階に進む
             step = $('#step').text();
             switch (step) {
                 case 'フロップ':
@@ -144,7 +154,9 @@ const action = (a) => {
 
         case 'raise':
             //チップ調整
+            //ベット額の制約　⓵自分のベット額の合計＞相手のベット額、⓶新たなベットは自分の総チップ量以内の額
             if ((parseInt($('#amount').val()) + parseInt($('#playerBet').text())) > parseInt($('#oppBet').text()) && (parseInt($('#amount').val()) <= parseInt($('#playerStack').text()))) {
+                //自分の総チップ全てをベット⇒オールイン
                 if (parseInt($('#amount').val()) == parseInt($('#playerStack').text())) {
                     $('#playerBet').html(parseInt($('#amount').val()) + parseInt($('#playerBet').text()))
                     $('#playerStack').html(0)
@@ -177,6 +189,7 @@ const action = (a) => {
 
         case 'bet':
             //チップ調整
+            //ベット額の制約はレイズの場合と同じ
             if ((parseInt($('#amount').val()) + parseInt($('#playerBet').text())) > parseInt($('#oppBet').text()) && (parseInt($('#amount').val()) <= parseInt($('#playerStack').text()))) {
                 if (parseInt($('#amount').val()) == parseInt($('#playerStack').text())) {
                     $('#playerAct').html('オールイン');
@@ -204,6 +217,7 @@ const action = (a) => {
 
 const oppMove = (a) => {
     switch (a) {
+        //フォールド⇒自分の勝ち
         case 'fold':
             $('#oppAct').html('フォールド');
             $('#oppAct').show();
@@ -220,6 +234,7 @@ const oppMove = (a) => {
                 $('#oppAct').show();
 
             } else {
+                //総チップ量が必要コール額以下の場合、オールイン⇒ショーダウン
                 $('#oppBet').html(parseInt($('#oppBet').text()) + parseInt($('#oppStack').text()))
                 $('#oppStack').html(0)
                 $('#oppAct').html('オールイン');
@@ -254,6 +269,8 @@ const oppMove = (a) => {
             $('#raise').hide();
 
             break;
+
+        //自分のベットorレイズ後に相手はレイズを取りうる
         case 'raise':
             //チップ調整
             //レイズ額は自分のベット額の3倍に固定
@@ -266,7 +283,8 @@ const oppMove = (a) => {
                 $('#oppBet').html(parseInt($('#oppBet').text()) + parseInt($('#oppStack').text()))
                 $('#oppStack').html(0)
                 $('#oppAct').html('オールイン');
-                if (parseInt($('#oppBet').text()) < parseInt($('#playerBet').text())) {
+                //オールイン後の相手のベット額が自分のベット額以下なら自分にアクションは返らず、ショーダウン（実質コール）
+                if (parseInt($('#oppBet').text()) <= parseInt($('#playerBet').text())) {
                     window.setTimeout("showDown()", t);
                     break;
                 }
@@ -394,16 +412,12 @@ const proceed = (a) => {
 
 
 const showDown = () => {
-    //アクションの非表示
-    $('#playerAct').hide();
-    $('#oppAct').hide();
-
     //相手の手札をオープンする
     $('#step').hide();
     $('#oppback').hide();
     $('#cardOpp').show();
 
-    //カードを裏返す
+    //カードを裏返す（リバーまで行かずにショーダウンの場合を考慮）
     $('#back1').hide();
     $('#flop').show();
     $('#back2').hide();
@@ -454,9 +468,8 @@ const showDown = () => {
                 break;
         }
     }
+
     $('#pot').html(0);
-    if (parseInt($('#oppStack').text()) == 0) alert('相手のチップを全て奪いました');
-    if (parseInt($('#playerStack').text()) == 0) alert('チップがなくなりました');
 
     //継続プレイ用にチップ量引き継ぎ
     playerStack = parseInt($('#playerStack').text())
