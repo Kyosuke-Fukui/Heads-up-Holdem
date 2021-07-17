@@ -1,8 +1,3 @@
-// const Game = class {
-//     constructor() {
-
-//     }
-// }
 //カードの情報を取得
 const getCard = () => {
     $.ajax({
